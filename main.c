@@ -59,11 +59,12 @@ int main()
     char keystring[64];
     unsigned long timedecimal;
 	scanf("%s %lu", keystring, &timedecimal);
+
     clock_t begin = clock();
+
     int keylenbytes = strlen(keystring);
     int key[keylenbytes];
     for (int i=0;i<keylenbytes;i++) key[i]=keystring[i];
-
     timedecimal /= 30;
     int msg[8];
     msg[0] = (timedecimal >> 56) & 0xFF;
@@ -75,7 +76,6 @@ int main()
 	msg[6] = (timedecimal >> 8) & 0xFF;
 	msg[7] = timedecimal & 0xFF;
     int msglenbytes = 8;
-    
     hmacPhoton(key, keylenbytes, msg, msglenbytes, hmacDigest);
     int offset = hmacDigest[DigestByteSize - 1] & 0xf;
     int binary =
@@ -84,8 +84,6 @@ int main()
         ((hmacDigest[offset + 2] & 0xff) << 8) |
         (hmacDigest[offset + 3] & 0xff);
     int totp = binary % 1000000;
-
-    clock_t end = clock();
     printf("Key (ascii): ");
     for (int i = 0; i < keylenbytes; i++)
     {
@@ -109,6 +107,8 @@ int main()
     snprintf(totpstring, sizeof(totpstring), "%06d", totp);
     printf("TOTP: %s\n", totpstring);
 
+    clock_t end = clock();
     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
     printf("Execution Time:%f seconds\n", time_spent);
+    
 }
