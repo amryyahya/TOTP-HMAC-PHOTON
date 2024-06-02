@@ -57,24 +57,26 @@ int main()
 {
     int hmacDigest[DigestByteSize];
     char keystring[64];
-    unsigned long timedecimal;
-	scanf("%s %lu", keystring, &timedecimal);
+	scanf("%s", keystring);
 
     clock_t begin = clock();
 
     int keylenbytes = strlen(keystring);
     int key[keylenbytes];
     for (int i=0;i<keylenbytes;i++) key[i]=keystring[i];
-    timedecimal /= 30;
+    int timestep = 30;
+    unsigned long T = (unsigned long)time(NULL);
+
+    T /= timestep;
     int msg[8];
-    msg[0] = (timedecimal >> 56) & 0xFF;
-	msg[1] = (timedecimal >> 48) & 0xFF;
-	msg[2] = (timedecimal >> 40) & 0xFF;
-	msg[3] = (timedecimal >> 32) & 0xFF;
-	msg[4] = (timedecimal >> 24) & 0xFF;
-	msg[5] = (timedecimal >> 16) & 0xFF;
-	msg[6] = (timedecimal >> 8) & 0xFF;
-	msg[7] = timedecimal & 0xFF;
+    msg[0] = (T >> 56) & 0xFF;
+	msg[1] = (T >> 48) & 0xFF;
+	msg[2] = (T >> 40) & 0xFF;
+	msg[3] = (T >> 32) & 0xFF;
+	msg[4] = (T >> 24) & 0xFF;
+	msg[5] = (T >> 16) & 0xFF;
+	msg[6] = (T >> 8) & 0xFF;
+	msg[7] = T & 0xFF;
     int msglenbytes = 8;
     hmacPhoton(key, keylenbytes, msg, msglenbytes, hmacDigest);
     int offset = hmacDigest[DigestByteSize - 1] & 0xf;
