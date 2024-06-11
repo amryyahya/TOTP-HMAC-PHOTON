@@ -53,11 +53,9 @@ void hmacPhoton(int *key, int keylenbytes, int *msg, int msglenbytes, int *hmacD
 
 }
 
-int main()
+int getTOTP(char* keystring)
 {
     int hmacDigest[DigestByteSize];
-    char keystring[64];
-	scanf("%s", keystring);
 
     clock_t begin = clock();
 
@@ -86,31 +84,38 @@ int main()
         ((hmacDigest[offset + 2] & 0xff) << 8) |
         (hmacDigest[offset + 3] & 0xff);
     int totp = binary % 1000000;
-    printf("Key (ascii): ");
-    for (int i = 0; i < keylenbytes; i++)
-    {
-        printf("%d ", key[i]);
-    }
+    return totp;
+    // printf("Key (ascii): ");
+    // for (int i = 0; i < keylenbytes; i++)
+    // {
+    //     printf("%d ", key[i]);
+    // }
 
-    printf("\n");
-    printf("Time/Timestep (hex): ");
-    for (int i = 0; i < 8; i++)
-    {
-        printf("%02x", msg[i]);
-    }
-    printf("\n");
-    printf("HMAC Digest (hex): ");
-    for (int i = 0; i < DigestByteSize; ++i)
-    {
-        printf("%02x", hmacDigest[i]);
-    }
-    printf("\n");
-    char totpstring[7];
-    snprintf(totpstring, sizeof(totpstring), "%06d", totp);
-    printf("TOTP: %s\n", totpstring);
+    // printf("\n");
+    // printf("Time/Timestep (hex): ");
+    // for (int i = 0; i < 8; i++)
+    // {
+    //     printf("%02x", msg[i]);
+    // }
+    // printf("\n");
+    // printf("HMAC Digest (hex): ");
+    // for (int i = 0; i < DigestByteSize; ++i)
+    // {
+    //     printf("%02x", hmacDigest[i]);
+    // }
+    // printf("\n");
+    // char totpstring[7];
+    // snprintf(totpstring, sizeof(totpstring), "%06d", totp);
+    // printf("TOTP: %s\n", totpstring);
 
-    clock_t end = clock();
-    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    printf("Execution Time:%f seconds\n", time_spent);
+    // clock_t end = clock();
+    // double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    // printf("Execution Time:%f seconds\n", time_spent);
     
+}
+
+int main(){
+    char key[] = "abc";
+    int totp = getTOTP(key);
+    printf("%d", totp);
 }
