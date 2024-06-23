@@ -85,37 +85,10 @@ int getTOTP(char* keystring)
         (hmacDigest[offset + 3] & 0xff);
     int totp = binary % 1000000;
     return totp;
-    // printf("Key (ascii): ");
-    // for (int i = 0; i < keylenbytes; i++)
-    // {
-    //     printf("%d ", key[i]);
-    // }
-
-    // printf("\n");
-    // printf("Time/Timestep (hex): ");
-    // for (int i = 0; i < 8; i++)
-    // {
-    //     printf("%02x", msg[i]);
-    // }
-    // printf("\n");
-    // printf("HMAC Digest (hex): ");
-    // for (int i = 0; i < DigestByteSize; ++i)
-    // {
-    //     printf("%02x", hmacDigest[i]);
-    // }
-    // printf("\n");
-    // char totpstring[7];
-    // snprintf(totpstring, sizeof(totpstring), "%06d", totp);
-    // printf("TOTP: %s\n", totpstring);
-
-    // clock_t end = clock();
-    // double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    // printf("Execution Time:%f seconds\n", time_spent);
-    
 }
 
 int main(){
-    char key[] = "abc";
+    char key[] = "aaaaaaaaaaaaaaaaaaaa";
     int totp = getTOTP(key);
     printf("%d", totp);
 }

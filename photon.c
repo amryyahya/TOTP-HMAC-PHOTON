@@ -18,15 +18,6 @@ const int M[D][D] = {
     {9, 15, 7, 2, 11, 4, 13},
     {13, 8, 7, 10, 15, 3, 5},
     {5, 10, 5, 2, 15, 2, 4}};
-int State[D][D] = {
-    {0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0},
-    {0, 2, 8, 2, 4, 2, 4},
-};
 
 #elif defined(_PHOTON224_)
 #define D 8
@@ -43,17 +34,7 @@ const int M[D][D] = {
     {9, 14, 5, 15, 4, 12, 9, 6},
     {12, 2, 2, 10, 3, 1, 1, 14},
     {15, 1, 13, 10, 5, 10, 2, 3}};
-int State[D][D] = {
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 3, 8, 2, 0, 2, 0},
 
-};
 #elif defined(_PHOTON256_)
 #define D 6
 #define S 8
@@ -67,15 +48,7 @@ const int M[D][D] = {
     {132, 228, 121, 155, 103, 11},
     {22, 153, 239, 111, 144, 75},
     {150, 203, 210, 121, 36, 167}};
-int State[D][D] = {
-    {0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0x40, 0x20, 0x20}
 
-};
 #endif
 
 #if defined(_PHOTON160_) || defined(_PHOTON224_)
@@ -192,6 +165,41 @@ void permutation(int State[D][D])
 
 int photon(int *msg, int msgLength, int *digest)
 {
+    #if defined(_PHOTON160_)
+int State[D][D] = {
+    {0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0},
+    {0, 2, 8, 2, 4, 2, 4},
+};
+
+#elif defined(_PHOTON224_)
+int State[D][D] = {
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 3, 8, 2, 0, 2, 0},
+
+};
+#elif defined(_PHOTON256_)
+
+int State[D][D] = {
+    {0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0x40, 0x20, 0x20}
+
+};
+#endif
     int remains = R - (msgLength % R);
     int paddedLength = msgLength + remains;
     int paddedMsg[paddedLength];
@@ -238,7 +246,6 @@ int photon(int *msg, int msgLength, int *digest)
 
 int hash(int *msgBytes, int msgBytesLength, int *digestByte, int byteSize)
 {
-    clock_t start, end;
     int digest[N];
 
 #if defined(_PHOTON160_) || defined(_PHOTON224_)
@@ -250,18 +257,14 @@ int hash(int *msgBytes, int msgBytesLength, int *digestByte, int byteSize)
         msg[j++] = msgBytes[i] / 16;
         msg[j++] = msgBytes[i] % 16;
     }
-    start = clock();
     photon(msg, msgLength, digest);
-    end = clock();
     j = 0;
     for (int i = 0; i < byteSize; i++)
     {
         digestByte[i] = digest[j++] * 0x10 + digest[j++];
     }
 #elif defined(_PHOTON256_)
-    start = clock();
     photon(msgBytes, msgBytesLength, digestByte);
-    end = clock();
 #endif
 
     return 0;
